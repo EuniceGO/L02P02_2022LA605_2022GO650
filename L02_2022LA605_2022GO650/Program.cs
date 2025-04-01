@@ -8,7 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options => {
+
+builder.Services.AddSession(options => 
+{
+
     options.IdleTimeout = TimeSpan.FromSeconds(3600);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
@@ -16,7 +19,7 @@ builder.Services.AddSession(options => {
 
 builder.Services.AddDbContext<libreriaDbContext>(opt =>
         opt.UseSqlServer(
-            builder.Configuration.GetConnectionString("equipoDbConnection")));
+            builder.Configuration.GetConnectionString("libreriaDB")));
 var app = builder.Build();
 
 
