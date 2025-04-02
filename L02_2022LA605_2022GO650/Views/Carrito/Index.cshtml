@@ -5,7 +5,8 @@
 }
 
 <div class="container mt-5">
-    <div class="text-center">
+    <div class="parte-superior text-center">
+        <img class="imagen_logo" src="https://i.ibb.co/k6JR95vP/UNICAES-Logo.png" alt="UNICAES-Logo" border="0">
         <h2>Venta de Libros</h2>
         <p>Seleccione los libros y posterior ingrese sus datos</p>
     </div>
@@ -30,6 +31,7 @@
                             <td>$@libro.precio</td>
                             <td>
                                 <form method="post" asp-action="AgregarAlCarrito" asp-controller="Carrito">
+                                    <input type="hidden" name="idCliente" value="@Model.IdCliente" />
                                     <input type="hidden" name="idLibro" value="@libro.id" />
                                     <button type="submit" class="btn btn-success">+ Agregar</button>
                                 </form>
@@ -52,4 +54,8 @@
             </div>
         </div>
     </div>
+    <footer class="footer"  text-center mt-5 text-muted">
+        <p>2022-LA-605 - Kathya Michelle Leal Alvarenga</p>
+        <p>2022-GO-650 - Katherine Eunice Gutiérrez Orellana</p>
+    </footer>
 </div>

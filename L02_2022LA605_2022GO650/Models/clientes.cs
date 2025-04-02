@@ -14,6 +14,6 @@ namespace L02P02_2022LA605_2022GO650.Models
         [EmailAddress(ErrorMessage = "Correo inválido.")]
         public string email {  get; set; }
         public string direccion {  get; set; }
-        public DateTime dateTime { get; set; } = DateTime.Now;
+        public DateTime created_at { get; set; } = DateTime.Now;
     }
 }
