@@ -1,0 +1,71 @@
+﻿@model L02P02_2022LA605_2022GO650.ViewModels.CierreVentaViewModel
+
+@{
+    ViewData["Title"] = "Cierre de Venta";
+}
+
+<div class="container-fluid bg-dark text-white py-4 text-center">
+    <img src="~/images/logo.png" alt="Logo" width="80">
+    <h2>Venta de Libros</h2>
+    <p>Seleccione los libros y posterior ingrese sus datos</p>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Datos del Cliente -->
+        <div class="col-md-8">
+            <h3 class="text-primary">Proceso de venta</h3>
+            <div class="card p-4">
+                <h5>Datos del Cliente</h5>
+                <form>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Nombre</label>
+                            <input type="text" class="form-control" value="@Model.Cliente.Nombre" readonly>
+                        </div>
+                       
+                    </div>
+                    <div class="mt-3">
+                        <label>Email</label>
+                        <input type="email" class="form-control" value="@Model.Cliente.Email" readonly>
+                    </div>
+                    <div class="mt-3">
+                        <label>Dirección</label>
+                        <input type="text" class="form-control" value="@Model.Cliente.Direccion" readonly>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Carrito -->
+        <div class="col-md-4">
+            <h3 class="text-primary text-center">Carrito</h3>
+            <div class="card p-3">
+                <div class="cart-items">
+                    @foreach (var item in Model.Carrito)
+                    {
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <strong>@item.Nombre</strong> <br>
+                                <small>Autor</small>
+                            </div>
+                            <span class="text-primary">$@item.Precio</span>
+                        </div>
+                        <hr>
+                    }
+                </div>
+                <div class="text-end">
+                    <h4>Total (USD): <strong>$@Model.Total</strong></h4>
+                </div>
+                <form method="post" asp-action="CerrarVenta" asp-controller="Carrito">
+                    <button type="submit" class="btn btn-success w-100 mt-3">Cerrar venta</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid bg-dark text-white text-center p-3 mt-4">
+    YYYY-DD-NN - NOMBRE DEL ALUMNO UNO <br>
+    YYYY-DD-NN - NOMBRE DEL ALUMNO DOS
+</div>
