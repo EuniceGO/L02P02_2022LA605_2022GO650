@@ -5,10 +5,12 @@
         public ClienteViewModel Cliente { get; set; } = new ClienteViewModel();
         public List<CarritoItemViewModel> Carrito { get; set; } = new List<CarritoItemViewModel>();
         public decimal Total => Carrito.Sum(item => item.Precio * item.Cantidad);
+        public int Id_cliente { get; set; }
     }
 
     public class ClienteViewModel
     {
+        public int Id_cliente {  get; set; }
         public string Nombre { get; set; } = "";
         public string Email { get; set; } = "";
         public string Direccion { get; set; } = "";

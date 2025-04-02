@@ -60,13 +60,24 @@ namespace L02P02_2022LA605_2022GO650.Controllers
             return RedirectToAction("Index", new { idCliente });
         }
 
-     
+        /*[HttpPost]
+        public IActionResult CompletarCompra()
+        {
+            var carrito = _context.pedido_encabezado.FirstOrDefault(p => p.id_cliente == 1);
+            if (carrito != null)
+            {
+                _context.pedido_encabezado.Remove(carrito);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Index");
+        }*/
 
         public IActionResult CompletarCompra(int idCliente)
         {
             var pedido = new pedido_encabezado
             {
-                id_cliente = 1, // Aquí debes obtener el cliente autenticado si es necesario
+                id_cliente = idCliente, 
                 cantidad_libros = _context.pedido_detalle.Count(d => d.id_pedido == idCliente), // Obtiene el número de libros
                 total = _context.pedido_detalle.Where(d => d.id_pedido == idCliente).Sum(d => _context.Libros.FirstOrDefault(l => l.id == d.id_libro).precio), // Suma los precios
                 estado = "P" // Pedido en estado Pendiente
@@ -75,7 +86,7 @@ namespace L02P02_2022LA605_2022GO650.Controllers
             _context.pedido_encabezado.Add(pedido);
             _context.SaveChanges();
 
-            return View("CierreVenta");
+            return RedirectToAction("CierreVentas", new { idCliente });
 
 
         }
@@ -107,12 +118,13 @@ namespace L02P02_2022LA605_2022GO650.Controllers
                 Carrito = detalles.Select(d => new CarritoItemViewModel
                 {
                     Nombre = _context.Libros.Find(d.id_libro)?.nombre,
-                    Cantidad = 1, // Assuming each detail represents one book
+                    Cantidad = 1,
                     Precio = _context.Libros.Find(d.id_libro)?.precio ?? 0
-                }).ToList()
+                }).ToList(),
+                Id_cliente = idCliente // Asegurar que el idCliente se pase a la vista
             };
 
-            return View(viewModel);
+            return View("CierreVenta", viewModel); // Renderiza la vista CierreVenta
         }
 
 
@@ -132,6 +144,7 @@ namespace L02P02_2022LA605_2022GO650.Controllers
             TempData["Mensaje"] = "¡Venta cerrada con éxito!";
             return RedirectToAction("Index", "Home");
         }
+
 
 
 

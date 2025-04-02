@@ -70,15 +70,13 @@
                 <div class="text-end">
                     <h4>Total (USD): <strong>$@(Model?.Total ?? 0)</strong></h4>
                 </div>
-                <form method="post" asp-action="CerrarVenta" asp-controller="Carrito">
-                    <button type="submit" class="btn btn-success w-100 mt-3" @(Model?.Carrito == null || !Model.Carrito.Any() ? "disabled" : "")>Cerrar venta</button>
+                <form asp-action="CerrarVenta" asp-controller="Carrito" method="post">
+                    <input type="hidden" name="idCliente" value="@Model.Id_cliente" />
+                    <button type="submit" class="btn btn-primary">Cerrar Venta</button>
                 </form>
+
             </div>
         </div>
     </div>
 </div>
 
-<div class="container-fluid bg-dark text-white text-center p-3 mt-4">
-    YYYY-DD-NN - NOMBRE DEL ALUMNO UNO <br>
-    YYYY-DD-NN - NOMBRE DEL ALUMNO DOS
-</div>
