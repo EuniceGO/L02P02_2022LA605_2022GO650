@@ -13,34 +13,36 @@ namespace L02P02_2022LA605_2022GO650.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int idCliente)
         {
             var libros = _context.Libros.ToList();
-            var carrito = _context.pedido_encabezado.FirstOrDefault(p => p.id_cliente == 1); // Simulación de cliente fijo
+            var carrito = _context.pedido_encabezado.FirstOrDefault(p => p.id_cliente == idCliente);
+
 
             var viewModel = new CarritoViewModel
             {
                 Libros = libros,
                 CantidadLibros = carrito?.cantidad_libros ?? 0,
-                Total = carrito?.total ?? 0
+                Total = carrito?.total ?? 0,
+                IdCliente = idCliente
             };
 
             return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult AgregarAlCarrito(int idLibro)
+        public IActionResult AgregarAlCarrito(int idLibro, int idCliente)
         {
             var libro = _context.Libros.FirstOrDefault(l => l.id == idLibro);
             if (libro != null)
             {
-                var carrito = _context.pedido_encabezado.FirstOrDefault(p => p.id_cliente == 1);
+                var carrito = _context.pedido_encabezado.FirstOrDefault(p => p.id_cliente == idCliente);
 
                 if (carrito == null)
                 {
                     carrito = new pedido_encabezado
                     {
-                        id_cliente = 1,
+                        id_cliente = idCliente,
                         cantidad_libros = 1,
                         total = libro.precio
                     };
@@ -55,29 +57,18 @@ namespace L02P02_2022LA605_2022GO650.Controllers
 
                 _context.SaveChanges();
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { idCliente });
         }
 
-        /*[HttpPost]
-        public IActionResult CompletarCompra()
-        {
-            var carrito = _context.pedido_encabezado.FirstOrDefault(p => p.id_cliente == 1);
-            if (carrito != null)
-            {
-                _context.pedido_encabezado.Remove(carrito);
-                _context.SaveChanges();
-            }
+     
 
-            return RedirectToAction("Index");
-        }*/
-
-        public IActionResult CompletarCompra()
+        public IActionResult CompletarCompra(int idCliente)
         {
             var pedido = new pedido_encabezado
             {
                 id_cliente = 1, // Aquí debes obtener el cliente autenticado si es necesario
-                cantidad_libros = _context.pedido_detalle.Count(d => d.id_pedido == 1), // Obtiene el número de libros
-                total = _context.pedido_detalle.Where(d => d.id_pedido == 1).Sum(d => _context.Libros.FirstOrDefault(l => l.id == d.id_libro).precio), // Suma los precios
+                cantidad_libros = _context.pedido_detalle.Count(d => d.id_pedido == idCliente), // Obtiene el número de libros
+                total = _context.pedido_detalle.Where(d => d.id_pedido == idCliente).Sum(d => _context.Libros.FirstOrDefault(l => l.id == d.id_libro).precio), // Suma los precios
                 estado = "P" // Pedido en estado Pendiente
             };
 
@@ -93,9 +84,9 @@ namespace L02P02_2022LA605_2022GO650.Controllers
 
 
         // Método para mostrar la vista de cierre de venta
-        public IActionResult CierreVentas()
+        public IActionResult CierreVentas(int idCliente)
         {
-            var pedido = _context.pedido_encabezado.FirstOrDefault(p => p.id_cliente == 1 && p.estado == "P"); // Pedido pendiente
+            var pedido = _context.pedido_encabezado.FirstOrDefault(p => p.id_cliente == idCliente && p.estado == "P"); // Pedido pendiente
 
             if (pedido == null)
             {
@@ -127,9 +118,9 @@ namespace L02P02_2022LA605_2022GO650.Controllers
 
         // Acción para cerrar la venta
         [HttpPost]
-        public IActionResult CerrarVenta()
+        public IActionResult CerrarVenta(int idCliente)
         {
-            var pedido = _context.pedido_encabezado.FirstOrDefault(p => p.id_cliente == 1 && p.estado == "P");
+            var pedido = _context.pedido_encabezado.FirstOrDefault(p => p.id_cliente == idCliente && p.estado == "P");
             if (pedido == null)
             {
                 return RedirectToAction("Index", "Home");

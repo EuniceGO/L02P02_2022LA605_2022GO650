@@ -49,6 +49,7 @@
                 <h4>Total (USD): $@Model.Total</h4>
                 <h5>Libros en carrito: @Model.CantidadLibros</h5>
                 <form method="post" asp-action="CompletarCompra" asp-controller="Carrito">
+                    <input type="hidden" name="idCliente" value="@Model.IdCliente" />
                     <button type="submit" class="btn btn-primary w-100 mt-3">Completar Compra</button>
                 </form>
             </div>
