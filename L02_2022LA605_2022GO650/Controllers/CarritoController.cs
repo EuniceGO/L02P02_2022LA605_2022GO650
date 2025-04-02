@@ -192,7 +192,7 @@ namespace L02P02_2022LA605_2022GO650.Controllers
             _context.SaveChanges();
 
             TempData["Mensaje"] = "¡Venta cerrada con éxito!";
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("InicioVenta", "Cliente");
         }
 
 
