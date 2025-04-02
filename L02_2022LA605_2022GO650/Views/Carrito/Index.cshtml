@@ -1,6 +1,5 @@
 ﻿@model L02P02_2022LA605_2022GO650.ViewModels.CarritoViewModel
 
-
 @{
     ViewData["Title"] = "Venta de Libros";
 }
@@ -12,9 +11,9 @@
     </div>
 
     <div class="row">
-        <!-- Lista de Libros -->
+        <!-- Lista de Libros Disponibles -->
         <div class="col-md-8">
-            <h3 class="text-primary">Libros</h3>
+            <h3 class="text-primary">Libros Disponibles</h3>
             <table class="table">
                 <thead>
                     <tr>
@@ -27,11 +26,11 @@
                     @foreach (var libro in Model.Libros)
                     {
                         <tr>
-                            <td>@libro.Nombre</td>
-                            <td>$@libro.Precio</td>
+                            <td>@libro.nombre</td>
+                            <td>$@libro.precio</td>
                             <td>
                                 <form method="post" asp-action="AgregarAlCarrito" asp-controller="Carrito">
-                                    <input type="hidden" name="idLibro" value="@libro.Id" />
+                                    <input type="hidden" name="idLibro" value="@libro.id" />
                                     <button type="submit" class="btn btn-success">+ Agregar</button>
                                 </form>
                             </td>
@@ -41,14 +40,14 @@
             </table>
         </div>
 
-        <!-- Total de Libros -->
+        <!-- Resumen del Carrito -->
         <div class="col-md-4">
-            <h3 class="text-primary">Total Libros</h3>
+            <h3 class="text-primary">Carrito</h3>
             <div class="card p-3">
                 <h4>Total (USD): $@Model.Total</h4>
                 <h5>Libros en carrito: @Model.CantidadLibros</h5>
                 <form method="post" asp-action="CompletarCompra" asp-controller="Carrito">
-                    <button type="submit" class="btn btn-primary w-100">Completar</button>
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Completar Compra</button>
                 </form>
             </div>
         </div>

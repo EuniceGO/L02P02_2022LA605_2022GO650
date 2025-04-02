@@ -6,8 +6,6 @@ namespace L02P02_2022LA605_2022GO650.Controllers
 {
     public class CarritoController : Controller
     {
-        private static List<pedido_detalle> carrito = new(); // Simulación del carrito
-
         private readonly libreriaDbContext _context;
 
         public CarritoController(libreriaDbContext context)
@@ -18,13 +16,13 @@ namespace L02P02_2022LA605_2022GO650.Controllers
         public IActionResult Index()
         {
             var libros = _context.Libros.ToList();
-            var total = carrito.Sum(c => _context.Libros.Find(c.id)?.Precio ?? 0);
+            var carrito = _context.pedido_encabezado.FirstOrDefault(p => p.id_cliente == 1); // Simulación de cliente fijo
 
             var viewModel = new CarritoViewModel
             {
                 Libros = libros,
-                Total = total,
-                CantidadLibros = carrito.Count
+                CantidadLibros = carrito?.cantidad_libros ?? 0,
+                Total = carrito?.total ?? 0
             };
 
             return View(viewModel);
@@ -33,45 +31,44 @@ namespace L02P02_2022LA605_2022GO650.Controllers
         [HttpPost]
         public IActionResult AgregarAlCarrito(int idLibro)
         {
-            var pedido = _context.pedido_encabezado.FirstOrDefault(p => p.id == 1); // Simulación de un pedido en progreso
-
-            if (pedido != null)
+            var libro = _context.Libros.FirstOrDefault(l => l.id == idLibro);
+            if (libro != null)
             {
-                var nuevoDetalle = new pedido_detalle
-                {
-                    id_pedido = pedido.id,
-                    id_libro = idLibro,
-                    dateTime = DateTime.Now
-                };
+                var carrito = _context.pedido_encabezado.FirstOrDefault(p => p.id_cliente == 1);
 
-                _context.pedido_detalle.Add(nuevoDetalle);
+                if (carrito == null)
+                {
+                    carrito = new pedido_encabezado
+                    {
+                        id_cliente = 1,
+                        cantidad_libros = 1,
+                        total = libro.precio
+                    };
+                    _context.pedido_encabezado.Add(carrito);
+                }
+                else
+                {
+                    carrito.cantidad_libros += 1;
+                    carrito.total += libro.precio;
+                    _context.pedido_encabezado.Update(carrito);
+                }
+
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult CompletarCompra()
+        {
+            var carrito = _context.pedido_encabezado.FirstOrDefault(p => p.id_cliente == 1);
+            if (carrito != null)
+            {
+                _context.pedido_encabezado.Remove(carrito);
                 _context.SaveChanges();
             }
 
             return RedirectToAction("Index");
         }
-
-
-        [HttpPost]
-        public IActionResult CompletarCompra()
-        {
-            var pedido = _context.pedido_encabezado.FirstOrDefault(p => p.id == 1);
-
-            if (pedido != null)
-            {
-                pedido.total = _context.pedido_detalle
-                    .Where(d => d.id == pedido.id)
-                    .Sum(d => d.id_libro);
-
-                pedido.cantidad_libros= _context.pedido_detalle.Count(d => d.id_pedido == pedido.id);
-
-                _context.SaveChanges();
-            }
-
-            return RedirectToAction("ProcesoVenta", "Venta");
-        }
-
-
-       
     }
 }
